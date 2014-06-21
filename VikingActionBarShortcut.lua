@@ -72,7 +72,7 @@ function VikingActionBarShortcut:OnDocumentReady()
 	Apollo.RegisterTimerHandler("ActionBarShortcutArtTimer", "OnActionBarShortcutArtTimer", self)
 	Apollo.CreateTimer("ActionBarShortcutArtTimer", 0.5, false)
 
-	Apollo.RegisterEventHandler("ShowVikingActionBarShortcut", "ShowWindow", self)
+	Apollo.RegisterEventHandler("ShowActionBarShortcut", "ShowWindow", self)
 
 	local tShortcutCount = {}
 
@@ -448,5 +448,5 @@ function VikingActionBarShortcut:OnGenerateTooltip(wndControl, wndHandler, eType
 end
 
 -----------------------------------------------------------
-local VikingActionBarShortcut_Singleton = VikingActionBarShortcut:new()
-VikingActionBarShortcut_Singleton:Init()
+local ActionBarShortcut_Singleton = VikingActionBarShortcut:new()
+ActionBarShortcut_Singleton:Init()
