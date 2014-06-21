@@ -21,7 +21,7 @@ function VikingActionBarShortcut:new(o)
 end
 
 function VikingActionBarShortcut:Init()
-	Apollo.RegisterAddon(self, nil, nil, {"ActionBarFrame"})
+	Apollo.RegisterAddon(self, nil, nil, {"VikingActionBarFrame"})
 end
 
 function VikingActionBarShortcut:OnLoad()
@@ -36,8 +36,8 @@ function VikingActionBarShortcut:OnSave(eType)
 	if eType ~= GameLib.CodeEnumAddonSaveLevel.Account then
 		return
 	end
-	
-	local tSavedData = 
+
+	local tSavedData =
 	{
 		nVersion = knVersion,
 		bDocked = self.bDocked,
@@ -51,19 +51,19 @@ function VikingActionBarShortcut:OnRestore(eType, tSavedData)
 	if tSavedData.nVersion ~= knVersion then
 		return
 	end
-	
+
 	if eType ~= GameLib.CodeEnumAddonSaveLevel.Account then
 		return
 	end
-	
+
 	if tSavedData.bDocked then
 		self.bDocked = tSavedData.bDocked
 	end
-	
+
 	if tSavedData.bHorz then
 		self.bHorz = tSavedData.bHorz
 	end
-	
+
 	self.tSavedData = tSavedData
 end
 
@@ -75,7 +75,7 @@ function VikingActionBarShortcut:OnDocumentReady()
 	Apollo.RegisterEventHandler("ShowVikingActionBarShortcut", "ShowWindow", self)
 
 	local tShortcutCount = {}
-	
+
 	self.tActionBarSettings = {}
 
 	--Floating Bar - Docked
@@ -91,7 +91,7 @@ function VikingActionBarShortcut:OnDocumentReady()
 			if wndBarItem:FindChild("ActionBarShortcutBtn"):GetContent()["strIcon"] ~= "" then
 				tShortcutCount[idx] = iBar + 1
 			end
-			
+
 			wndCurrBar:FindChild("ActionBarContainer"):ArrangeChildrenHorz(0)
 		end
 
@@ -99,7 +99,7 @@ function VikingActionBarShortcut:OnDocumentReady()
 		wndCurrBar:FindChild("OrientationBtn"):SetCheck(not self.bHorz)
 		self.tActionBars[idx] = wndCurrBar
 	end
-	
+
 	--Floating Bar - Horizontal
 	self.tActionBarsHorz = {}
 	for idx = knStartingBar, knMaxBars do
@@ -113,7 +113,7 @@ function VikingActionBarShortcut:OnDocumentReady()
 			if wndBarItem:FindChild("ActionBarShortcutBtn"):GetContent()["strIcon"] ~= "" then
 				tShortcutCount[idx] = iBar + 1
 			end
-			
+
 			wndCurrBar:FindChild("ActionBarContainer"):ArrangeChildrenHorz(0)
 		end
 
@@ -121,7 +121,7 @@ function VikingActionBarShortcut:OnDocumentReady()
 		wndCurrBar:FindChild("OrientationBtn"):SetCheck(not self.bHorz)
 		self.tActionBarsHorz[idx] = wndCurrBar
 	end
-	
+
 	--Floating Bar - Vertical
 	self.tActionBarsVert = {}
 	for idx = knStartingBar, knMaxBars do
@@ -135,7 +135,7 @@ function VikingActionBarShortcut:OnDocumentReady()
 			if wndBarItem:FindChild("ActionBarShortcutBtn"):GetContent()["strIcon"] ~= "" then
 				tShortcutCount[idx] = iBar + 1
 			end
-			
+
 			wndCurrBar:FindChild("ActionBarContainer"):ArrangeChildrenVert(0)
 		end
 
@@ -172,7 +172,7 @@ function VikingActionBarShortcut:SetBarPosition(wndBar, tArgSize, tArgCenter)
 	if  tArgSize == nil then
 		tArgSize = {}
 	end
-	
+
 	if  tArgCenter == nil then
 		tArgCenter = {}
 	end
@@ -196,7 +196,7 @@ function VikingActionBarShortcut:SetBarPosition(wndBar, tArgSize, tArgCenter)
 		nLeft   = tCenter.nX - tHalf.nWidth,
 		nTop    = tCenter.nY - tHalf.nHeight,
 		nRight  = tCenter.nX + tHalf.nWidth,
-		nBottom = tCenter.nY + tHalf.nHeight 
+		nBottom = tCenter.nY + tHalf.nHeight
 	}
 
 	wndBar:SetAnchorOffsets( tAnchors.nLeft, tAnchors.nTop, tAnchors.nRight, tAnchors.nBottom )
@@ -338,7 +338,7 @@ function VikingActionBarShortcut:ShowWindow(nBar, bIsVisible, nShortcuts)
     if self.tActionBarsHorz[nBar] == nil then
 		return
 	end
-	
+
 	self.tActionBarSettings[nBar] = {}
 	self.tActionBarSettings[nBar].bIsVisible = bIsVisible
 	self.tActionBarSettings[nBar].nShortcuts = nShortcuts
@@ -348,7 +348,7 @@ function VikingActionBarShortcut:ShowWindow(nBar, bIsVisible, nShortcuts)
 		self:ShowBarFloatHorz(nBar, bIsVisible, nShortcuts)
 		self:ShowBarFloatVert(nBar, bIsVisible, nShortcuts)
 	end
-	
+
 	if not self.bTimerRunning then
 		Apollo.StartTimer("ActionBarShortcutArtTimer")
 		self.bTimerRunning = true
@@ -366,57 +366,57 @@ function VikingActionBarShortcut:OnActionBarShortcutArtTimer()
 	for nbar, tSettings in pairs(self.tActionBarSettings) do
 		bBarVisible = bBarVisible or (tSettings.bIsVisible and self.bDocked)
 	end
-	
+
 	Event_FireGenericEvent("ShowActionBarShortcutDocked", bBarVisible)
 end
 
 function VikingActionBarShortcut:OnDockBtn(wndControl, wndHandler)
 	self.bDocked = not self.bDocked
 	self.bHorz = true
-	
+
 	for nbar, tActionBar in pairs(self.tActionBars) do
 		tActionBar:Show(self.tActionBarSettings[nbar].bIsVisible and self.bDocked)
 		tActionBar:FindChild("DockBtn"):SetCheck(not self.bDocked)
 		tActionBar:FindChild("OrientationBtn"):SetCheck(not self.bHorz)
 	end
-	
+
 	for nbar, tActionBar in pairs(self.tActionBarsHorz) do
 		tActionBar:Show(self.tActionBarSettings[nbar].bIsVisible and not self.bDocked and self.bHorz)
 		tActionBar:FindChild("DockBtn"):SetCheck(not self.bDocked)
 		tActionBar:FindChild("OrientationBtn"):SetCheck(not self.bHorz)
 	end
-	
+
 	for nbar, tActionBar in pairs(self.tActionBarsVert) do
 		tActionBar:Show(self.tActionBarSettings[nbar].bIsVisible and not self.bDocked and not self.bHorz)
 		tActionBar:FindChild("DockBtn"):SetCheck(not self.bDocked)
 		tActionBar:FindChild("OrientationBtn"):SetCheck(not self.bHorz)
 	end
-	
+
 	Event_FireGenericEvent("ShowActionBarShortcutDocked", self.bDocked)
 end
 
 function VikingActionBarShortcut:OnOrientationBtn(wndControl, wndHandler)
 	self.bDocked = false
 	self.bHorz = not self.bHorz
-	
+
 	for nbar, tActionBar in pairs(self.tActionBars) do
 		tActionBar:Show(self.tActionBarSettings[nbar].bIsVisible and self.bDocked)
 		tActionBar:FindChild("DockBtn"):SetCheck(not self.bDocked)
 		tActionBar:FindChild("OrientationBtn"):SetCheck(not self.bHorz)
 	end
-	
+
 	for nbar, tActionBar in pairs(self.tActionBarsHorz) do
 		tActionBar:Show(self.tActionBarSettings[nbar].bIsVisible and not self.bDocked and self.bHorz)
 		tActionBar:FindChild("DockBtn"):SetCheck(not self.bDocked)
 		tActionBar:FindChild("OrientationBtn"):SetCheck(not self.bHorz)
 	end
-	
+
 	for nbar, tActionBar in pairs(self.tActionBarsVert) do
 		tActionBar:Show(self.tActionBarSettings[nbar].bIsVisible and not self.bDocked and not self.bHorz)
 		tActionBar:FindChild("DockBtn"):SetCheck(not self.bDocked)
 		tActionBar:FindChild("OrientationBtn"):SetCheck(not self.bHorz)
 	end
-	
+
 	Event_FireGenericEvent("ShowActionBarShortcutDocked", self.bDocked)
 end
 
