@@ -38,5 +38,4 @@
             <Event Name="GenerateTooltip" Function="OnGenerateTooltip"/>
         </Control>
     </Form>
-    <SpriteFile Name="..\VikingLibrary\VikingSprites.xml"/>
 </Forms>
